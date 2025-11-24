@@ -21,7 +21,6 @@ class _AuthPageState extends State<AuthPage> {
           child: Text('Sign in with Google'),
           onPressed: () async {
             await _googleAuthClient.init(AppConstants.googleWebClientId);
-
             final idToken = await _googleAuthClient.signInAndGetIdToken();
             if (idToken != null) {
               AppLogger.showDebug("ID Token: $idToken");
