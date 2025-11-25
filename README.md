@@ -20,6 +20,7 @@ final List<String> _scopes = [
   'https://www.googleapis.com/auth/photoslibrary.readonly',
   'https://www.googleapis.com/auth/photoslibrary',
 ];
+```
 
 ## 2. Request Login
 
@@ -29,7 +30,7 @@ Authenticate the user with Google Sign-In:
 final account = await GoogleSignIn.instance.authenticate(
   scopeHint: _scopes,
 );
-
+```
 
 ## 3. Prompt for Google Photos Picker
 
@@ -50,7 +51,7 @@ if (accessToken == null) {
 }
 
 return accessToken;
-
+```
 
 ## 4.Create Session
 
@@ -74,8 +75,10 @@ Once you have the pickerUri, you can open the Google Photos native app directly 
 
 Check session status until the user completes their selection:
 
+```dart
 mediaItemsSet: false — User is still selecting
 
 mediaItemsSet: true — User finished selecting
 
-result.mediaItems[] — Array of selected items
+result.mediaItems[] — Array of selected 
+```
