@@ -4,12 +4,21 @@ import 'package:spider/logger/app_logger.dart';
 class GooglePhotosAuth {
   final String serverClientId;
 
-  final List<String> _scopes = [
+    final List<String> _scopes = [
     'https://www.googleapis.com/auth/photoslibrary.appendonly',
     'https://www.googleapis.com/auth/photoslibrary.readonly',
     'https://www.googleapis.com/auth/photoslibrary',
   ];
 
+  // final List<String> _scopes = [
+  //   'https://www.googleapis.com/auth/photoslibrary.appendonly',
+  //   'https://www.googleapis.com/auth/photoslibrary.readonly',
+  //   'https://www.googleapis.com/auth/photoslibrary',
+  //   'https://www.googleapis.com/auth/userinfo.email',
+  //   'https://www.googleapis.com/auth/userinfo.profile',
+  //   "openid",
+  // ];
+  
   GooglePhotosAuth({required this.serverClientId});
 
   Future<String?> signInAndGetAccessToken() async {
