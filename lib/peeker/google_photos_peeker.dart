@@ -1,14 +1,14 @@
 import 'package:spider/logger/app_logger.dart';
 
-import 'service/picker_service.dart';
+import 'google_photos_peeker_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class GooglePhotosPeeker {
   final String backendBaseUrl;
-  late final PickerService pickerService;
+  late final GooglePhotosPeekerService pickerService;
 
   GooglePhotosPeeker({required this.backendBaseUrl}) {
-    pickerService = PickerService(backendBaseUrl);
+    pickerService = GooglePhotosPeekerService(backendBaseUrl);
   }
 
   Future<List<dynamic>?> pick({required String accessToken}) async {
@@ -32,7 +32,7 @@ class GooglePhotosPeeker {
     String sessionId,
     String accessToken,
   ) async {
-    
+
     const maxRetries = 60; 
     int retries = 0;
 

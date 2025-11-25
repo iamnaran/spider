@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:spider/logger/app_logger.dart';
 
-class PickerService {
+class GooglePhotosPeekerService {
   final String baseUrl;
 
-  PickerService(this.baseUrl);
+  GooglePhotosPeekerService(this.baseUrl);
 
   Future<Map<String, dynamic>?> createSession(String accessToken) async {
     final url = Uri.parse("$baseUrl/sessions");

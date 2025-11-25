@@ -13,7 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final googleAuth = GooglePhotosAuth(
-    serverClientId: AppConstants.googleWebClientId,
+    webClientId: AppConstants.googleWebClientId,
   );
   bool _isPicking = false;
   List<dynamic>? _selectedMedia;

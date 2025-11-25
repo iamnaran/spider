@@ -2,7 +2,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:spider/logger/app_logger.dart';
 
 class GooglePhotosAuth {
-  final String serverClientId;
+  final String webClientId;
 
     final List<String> _scopes = [
     'https://www.googleapis.com/auth/photoslibrary.appendonly',
@@ -19,11 +19,11 @@ class GooglePhotosAuth {
   //   "openid",
   // ];
   
-  GooglePhotosAuth({required this.serverClientId});
+  GooglePhotosAuth({required this.webClientId});
 
   Future<String?> signInAndGetAccessToken() async {
     try {
-      await GoogleSignIn.instance.initialize(serverClientId: serverClientId);
+      await GoogleSignIn.instance.initialize(serverClientId: webClientId);
 
       final account = await GoogleSignIn.instance.authenticate(
         scopeHint: _scopes,
