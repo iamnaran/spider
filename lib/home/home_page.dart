@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spider/auth/google_auth_client.dart';
+import 'package:spider/auth/google_photos_auth.dart';
 import 'package:spider/const/app_constants.dart';
 import 'package:spider/logger/app_logger.dart';
 import 'package:spider/peeker/google_photos_peeker.dart';
@@ -13,6 +14,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GoogleAuthClient _googleAuthClient = GoogleAuthClient();
+
+  final googleAuth = GooglePhotosAuth(
+    serverClientId: AppConstants.googleWebClientId,
+  );
   bool _isPicking = false;
   List<dynamic>? _selectedMedia;
   late final GooglePhotosPeeker _googlePhotosPeeker;
@@ -33,13 +38,16 @@ class _HomePageState extends State<HomePage> {
         child: ElevatedButton(
           child: Text('Click Google Photos'),
           onPressed: () async {
-            await _googleAuthClient.init(AppConstants.googleWebClientId);
-            final idToken = await _googleAuthClient.signInAndGetIdToken();
-            if (idToken != null) {
-              AppLogger.showDebug("ID Token: $idToken");
+            // await _googleAuthClient.init(AppConstants.googleWebClientId);
+            // final idToken = await _googleAuthClient.signInAndGetIdToken();
+
+            final accessToken = await googleAuth.signInAndGetAccessToken();
+
+            if (accessToken != null) {
+              AppLogger.showDebug("ID Token: $accessToken");
 
               final mediaItems = await _googlePhotosPeeker.pick(
-                idToken: idToken,
+                accessToken: accessToken,
               );
 
               if (mediaItems != null) {

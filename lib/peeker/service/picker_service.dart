@@ -7,10 +7,14 @@ class PickerService {
 
   PickerService(this.baseUrl);
 
-  Future<Map<String, dynamic>?> createSession(String idToken) async {
+  Future<Map<String, dynamic>?> createSession(String accessToken) async {
     final url = Uri.parse("$baseUrl/sessions");
-    final headers = {"Authorization": "Bearer $idToken"};
 
+    final headers = {
+      "Authorization": "Bearer $accessToken",
+      "Content-Type": "application/json",
+    };
+    
     try {
       final res = await http.post(url, headers: headers);
       return _parseResponse(res);
@@ -20,11 +24,21 @@ class PickerService {
     }
   }
 
-  Future<Map<String, dynamic>?> pollSession(String sessionId) async {
-    final url = Uri.parse("$baseUrl/picker/poll?sessionId=$sessionId");
+
+  Future<Map<String, dynamic>?> pollSession(
+    String sessionId,
+    String accessToken,
+  ) async {
+    final url = Uri.parse("$baseUrl/sessions/?sessionId=$sessionId");
 
     try {
-      final res = await http.get(url);
+      final res = await http.get(
+        url,
+        headers: {
+          "Authorization": "Bearer $accessToken",
+          "Content-Type": "application/json",
+        },
+      );
       return _parseResponse(res);
     } catch (e) {
       AppLogger.showDebug('Poll session error: $e');
@@ -33,8 +47,8 @@ class PickerService {
   }
 
   Map<String, dynamic>? _parseResponse(http.Response res) {
-    AppLogger.showDebug('Parsing Response $res.statusCode: ${res.body} ');
-
+    AppLogger.showDebug('Parsing Response $res.statusCode : ${res.body} ');
+    
     if (res.statusCode == 200) {
       try {
         return jsonDecode(res.body) as Map<String, dynamic>;
