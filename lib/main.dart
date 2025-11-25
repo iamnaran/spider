@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spider/auth/auth_page.dart';
+import 'package:spider/home/home_page.dart';
 import 'package:spider/logger/app_logger.dart';
 
 void main() {
@@ -10,7 +10,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -19,7 +18,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       debugShowCheckedModeBanner: false,
-      home: const AuthPage(),
+      home: const HomePage(),
     );
   }
 }
