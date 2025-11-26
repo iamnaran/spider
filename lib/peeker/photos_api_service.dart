@@ -7,7 +7,7 @@ class PhotosAPIService {
 
   PhotosAPIService(this.baseUrl);
 
-   Future<Map<String, dynamic>?> createSession(
+  Future<Map<String, dynamic>?> createSession(
     String accessToken, {
     int maxItems = 10,
   }) async {
@@ -25,9 +25,27 @@ class PhotosAPIService {
       AppLogger.showDebug(
         'Create session response: ${res.statusCode} ${res.body}',
       );
+
       if (res.statusCode == 200) {
-        return jsonDecode(res.body) as Map<String, dynamic>;
+        final Map<String, dynamic> data =
+            jsonDecode(res.body) as Map<String, dynamic>;
+
+        if (data.containsKey("pickerUri")) {
+          String picker = data["pickerUri"] as String;
+
+          // Correct autoclose handling
+          if (picker.contains("?")) {
+            data["pickerUri"] = "$picker&autoclose";
+          } else {
+            data["pickerUri"] = "$picker?autoclose";
+          }
+
+          AppLogger.showDebug("Updated pickerUri: ${data["pickerUri"]}");
+        }
+
+        return data;
       }
+
       AppLogger.showDebug('Failed to create session: ${res.body}');
       return null;
     } catch (e) {

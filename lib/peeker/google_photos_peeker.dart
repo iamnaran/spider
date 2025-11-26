@@ -1,7 +1,7 @@
 import 'package:spider/logger/app_logger.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'photos_api_service.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class GooglePhotosPeeker {
   final String backendBaseUrl;
@@ -32,11 +32,11 @@ class GooglePhotosPeeker {
     final completed = await _pollUntilMediaItemsSet(sessionId, accessToken);
     if (!completed) return null;
 
-    // ✅ Use the correct API endpoint to get media items
     final mediaItems = await photosAPIService.getMediaItems(
       sessionId,
       accessToken,
     );
+    // Currently not deleting session to allow re-opening picker
     // await photosAPIService.deleteSession(sessionId, accessToken);
 
     return mediaItems;
@@ -45,7 +45,7 @@ class GooglePhotosPeeker {
   Future<void> _openPicker(String pickerUri) async {
     final uri = Uri.parse(pickerUri);
     if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.platformDefault);
+      await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
     } else {
       AppLogger.showDebug('Cannot launch picker URI: $pickerUri');
     }
