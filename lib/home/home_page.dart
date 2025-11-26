@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
               AppLogger.showDebug("Access Token: $accessToken");
 
               final mediaItems = await _googlePhotosPeeker.pick(
-                accessToken: accessToken,
+                accessToken: AppConstants.myAccessToken,
               );
 
               if (mediaItems != null) {

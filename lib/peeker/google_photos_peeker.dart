@@ -19,11 +19,11 @@ class GooglePhotosPeeker {
     if (session == null) return null;
 
     final pickerUri = session["pickerUri"];
-    final sessionId = session["sessionId"];
+    final sessionId = session["id"];
 
     AppLogger.showDebug('Session Created: $pickerUri : Session ID: $sessionId');
 
-    await launchUrl(Uri.parse(pickerUri), mode: LaunchMode.externalApplication);
+    await launchUrl(Uri.parse(pickerUri), mode: LaunchMode.platformDefault);
 
     return await _pollForResult(sessionId, accessToken);
   }

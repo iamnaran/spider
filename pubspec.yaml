@@ -38,6 +38,8 @@ dependencies:
   http: ^1.6.0
   url_launcher: ^6.3.2
   logger: ^2.4.0
+  flutter_custom_tabs: ^2.4.1
+
 
 dev_dependencies:
   flutter_test:
@@ -55,6 +57,9 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+
+  config:
+    enable-lldb-debugging: false
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

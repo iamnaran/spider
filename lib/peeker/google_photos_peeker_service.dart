@@ -14,6 +14,9 @@ class GooglePhotosPeekerService {
       "Authorization": "Bearer $accessToken",
       "Content-Type": "application/json",
     };
+
+    AppLogger.showDebug('Create session Headers: $headers');
+
     
     try {
       final res = await http.post(url, headers: headers);
@@ -30,6 +33,7 @@ class GooglePhotosPeekerService {
     String accessToken,
   ) async {
     final url = Uri.parse("$baseUrl/sessions/?sessionId=$sessionId");
+    AppLogger.showDebug('Poll session error: $url');
 
     try {
       final res = await http.get(

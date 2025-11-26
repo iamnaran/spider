@@ -4,10 +4,8 @@ import 'package:spider/logger/app_logger.dart';
 class GooglePhotosAuth {
   final String webClientId;
 
-    final List<String> _scopes = [
-    'https://www.googleapis.com/auth/photoslibrary.appendonly',
-    'https://www.googleapis.com/auth/photoslibrary.readonly',
-    'https://www.googleapis.com/auth/photoslibrary',
+  final List<String> _scopes = [
+    'https://www.googleapis.com/auth/photoslibrary.readonly'
   ];
 
   // final List<String> _scopes = [
