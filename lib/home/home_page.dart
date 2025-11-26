@@ -18,6 +18,7 @@ class _HomePageState extends State<HomePage> {
   );
   bool isLoading = false;
   List<dynamic>? mediaItems;
+  String? accessToken;
   late final GooglePhotosPeeker _googlePhotosPeeker;
 
   @override
@@ -35,10 +36,18 @@ class _HomePageState extends State<HomePage> {
     });
 
     try {
+      accessToken ??= await googleAuth.signInAndGetAccessToken();
+
+      if (accessToken == null) {
+        AppLogger.showDebug('User canceled or failed to get access token.');
+        return;
+      }
+
       final items = await _googlePhotosPeeker.pickPhotos(
-        accessToken: AppConstants.myAccessToken,
-        maxItems: 10,
+        accessToken: accessToken!,
+        maxItems: 20,
       );
+
       setState(() {
         mediaItems = items;
       });
@@ -77,7 +86,7 @@ class _HomePageState extends State<HomePage> {
 
         return MediaGridItem(
           baseUrl: url,
-          accessToken: AppConstants.myAccessToken, // provide your token here
+          accessToken: accessToken!, // provide your token here
         );
       },
     );

@@ -5,17 +5,8 @@ class GooglePhotosAuth {
   final String webClientId;
 
   final List<String> _scopes = [
-    'https://www.googleapis.com/auth/photoslibrary.readonly'
+    'https://www.googleapis.com/auth/photospicker.mediaitems.readonly'
   ];
-
-  // final List<String> _scopes = [
-  //   'https://www.googleapis.com/auth/photoslibrary.appendonly',
-  //   'https://www.googleapis.com/auth/photoslibrary.readonly',
-  //   'https://www.googleapis.com/auth/photoslibrary',
-  //   'https://www.googleapis.com/auth/userinfo.email',
-  //   'https://www.googleapis.com/auth/userinfo.profile',
-  //   "openid",
-  // ];
   
   GooglePhotosAuth({required this.webClientId});
 
@@ -40,7 +31,7 @@ class GooglePhotosAuth {
       return accessToken;
     } on GoogleSignInException catch (e) {
       AppLogger.showDebug(
-        'Google Sign-In Exception: ${e.code} - ${e.description}',
+        'Google Sign-In Exception: ${e.code} - ${e.description} - $e',
       );
       return null;
     } catch (e) {
