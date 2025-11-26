@@ -1,57 +1,87 @@
 import 'package:spider/logger/app_logger.dart';
 
-import 'google_photos_peeker_service.dart';
+import 'photos_api_service.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class GooglePhotosPeeker {
   final String backendBaseUrl;
-  late final GooglePhotosPeekerService pickerService;
+  late final PhotosAPIService photosAPIService;
 
   GooglePhotosPeeker({required this.backendBaseUrl}) {
-    pickerService = GooglePhotosPeekerService(backendBaseUrl);
+    photosAPIService = PhotosAPIService(backendBaseUrl);
   }
 
-  Future<List<dynamic>?> pick({required String accessToken}) async {
-    final session = await pickerService.createSession(accessToken);
-
-    AppLogger.showDebug('Session Null');
-    
+  Future<List<dynamic>?> pickPhotos({
+    required String accessToken,
+    int maxItems = 10,
+  }) async {
+    final session = await photosAPIService.createSession(
+      accessToken,
+      maxItems: maxItems,
+    );
     if (session == null) return null;
 
-    final pickerUri = session["pickerUri"];
-    final sessionId = session["id"];
+    final pickerUri = session['pickerUri'] as String?;
+    final sessionId = session['id'] as String?;
+    if (pickerUri == null || sessionId == null) return null;
 
     AppLogger.showDebug('Session Created: $pickerUri : Session ID: $sessionId');
 
-    await launchUrl(Uri.parse(pickerUri), mode: LaunchMode.platformDefault);
+    await _openPicker(pickerUri);
 
-    return await _pollForResult(sessionId, accessToken);
+    final completed = await _pollUntilMediaItemsSet(sessionId, accessToken);
+    if (!completed) return null;
+
+    // ✅ Use the correct API endpoint to get media items
+    final mediaItems = await photosAPIService.getMediaItems(
+      sessionId,
+      accessToken,
+    );
+    // await photosAPIService.deleteSession(sessionId, accessToken);
+
+    return mediaItems;
   }
 
-  Future<List<dynamic>?> _pollForResult(
+  Future<void> _openPicker(String pickerUri) async {
+    final uri = Uri.parse(pickerUri);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.platformDefault);
+    } else {
+      AppLogger.showDebug('Cannot launch picker URI: $pickerUri');
+    }
+  }
+
+  Future<bool> _pollUntilMediaItemsSet(
     String sessionId,
-    String accessToken,
-  ) async {
+    String accessToken, {
+    int maxRetries = 15,
+    int initialDelaySeconds = 1,
+  }) async {
+    int attempt = 0;
+    int delaySeconds = initialDelaySeconds;
 
-    const maxRetries = 60; 
-    int retries = 0;
+    while (attempt < maxRetries) {
+      final session = await photosAPIService.getSession(sessionId, accessToken);
+      AppLogger.showDebug('Polling attempt #$attempt: $session');
 
-    while (retries < maxRetries) {
-      final result = await pickerService.pollSession(sessionId, accessToken);
-
-      if (result != null) {
-        if (result["mediaItemsSet"] == true) return result["mediaItems"];
-        if (result.containsKey('error')) {
-          AppLogger.showDebug('Error polling session: ${result['error']}');
-          return null;
+      if (session != null) {
+        if (session['mediaItemsSet'] == true) {
+          AppLogger.showDebug('Media items are ready.');
+          return true;
+        }
+        if (session.containsKey('error')) {
+          AppLogger.showDebug('Error polling session: ${session['error']}');
+          return false;
         }
       }
 
-      retries++;
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(Duration(seconds: delaySeconds));
+      delaySeconds = (delaySeconds * 2).clamp(1, 5); // exponential backoff
+      attempt++;
     }
 
     AppLogger.showDebug('Polling session timed out.');
-    return null;
+    return false;
   }
+
 }
